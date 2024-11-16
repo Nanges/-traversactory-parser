@@ -1,3 +1,5 @@
+import { Visitable } from "./visitable";
+
 type BaseToken<T> = {
   type: T;
 }
