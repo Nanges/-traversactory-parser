@@ -1,4 +1,4 @@
-import { Visitable } from '../visitable';
+import { Visitable } from '../utils/visitable';
 import { ASTLiteralVisitor } from './ast-visitor';
 
 abstract class ASTValue extends Visitable<ASTLiteralVisitor> {

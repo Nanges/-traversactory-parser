@@ -1,4 +1,4 @@
-import { Visitable } from '../visitable';
+import { Visitable } from '../utils/visitable';
 import { ASTNumber, ASTString } from './ast-literal';
 import { ASTArray, ASTObject, ASTTree } from './ast-tree';
 import { ASTLiteralVisitor, ASTVisitor } from './ast-visitor';
