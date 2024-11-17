@@ -39,3 +39,30 @@ describe('parse()', () => {
     expect(parse.bind(null, '=')).toThrow();
   });
 });
+
+describe('Parse with reviver', () => {
+  test('Parse array (1,2,3) => [2,4,6]', () => {
+    const reviver = (v: number) => v * 2;
+    expect(parse('(1,2,3)', reviver)).toEqual([2, 4, 6]);
+  });
+
+  test('Parse array (1,2,3) => [2,2,6]', () => {
+    const reviver = (v: number, [index]: (string | number)[]) => {
+      if ((index as number) % 2 === 0) {
+        return v * 2;
+      }
+      return v;
+    };
+    expect(parse('(1,2,3)', reviver)).toEqual([2, 2, 6]);
+  });
+
+  test('Parse Object (foo=(1,2,3), bar=(1,2,3)) => {foo:[1,2,3],bar:[2,4,6]}', () => {
+    const reviver = (v: number, path: (string | number)[]) => {
+      if (path.at(0) === 'bar' && typeof path.at(1) === 'number') {
+        return v * 2;
+      }
+      return v;
+    };
+    expect(parse('(foo=(1,2,3), bar=(1,2,3))', reviver)).toEqual({ foo: [1, 2, 3], bar: [2, 4, 6] });
+  });
+});
