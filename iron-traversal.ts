@@ -1,7 +1,6 @@
-import { promises } from "fs";
-import { RECIPES } from "./recipes";
-import { Recipe, Part } from "./types";
 import { parse } from "./parser/parser";
+import { RECIPES } from "./recipes";
+import { Part, Recipe } from "./types";
 
 function dependentsFrom(parts:Part[]){
     return RECIPES.filter(r => r.inputs.find(i => parts.includes(i.part)) !== undefined);
@@ -40,46 +39,46 @@ function* dependentPartTree(parts:Part[]){
 
 
 
-(async function(){
-    const content = await promises.readFile('./en-US.json',{encoding:'utf-8'});
-    const database: any[] = JSON.parse(content);
+// (async function(){
+//     const content = await promises.readFile('./en-US.json',{encoding:'utf-8'});
+//     const database: any[] = JSON.parse(content);
     
-    // Resources
+//     // Resources
 
-    const resourceDescriptor = "/Script/CoreUObject.Class'/Script/FactoryGame.FGResourceDescriptor'";
-    const itemDescriptor = "/Script/CoreUObject.Class'/Script/FactoryGame.FGItemDescriptor'";
-    const recipeWrapperId = "/Script/CoreUObject.Class'/Script/FactoryGame.FGRecipe'";
-    const manuFacturerWrapperId = "/Script/CoreUObject.Class'/Script/FactoryGame.FGBuildableManufacturer'";
+//     const resourceDescriptor = "/Script/CoreUObject.Class'/Script/FactoryGame.FGResourceDescriptor'";
+//     const itemDescriptor = "/Script/CoreUObject.Class'/Script/FactoryGame.FGItemDescriptor'";
+//     const recipeWrapperId = "/Script/CoreUObject.Class'/Script/FactoryGame.FGRecipe'";
+//     const manuFacturerWrapperId = "/Script/CoreUObject.Class'/Script/FactoryGame.FGBuildableManufacturer'";
 
-    const resourcesDesc = database.find(i => i.NativeClass === resourceDescriptor);
-    // console.log(resourcesDesc.Classes.length);
-    // console.log(resourcesDesc.Classes.map((c:DatabaseDescriptor) => [c.mDisplayName, c.ClassName]));
+//     const resourcesDesc = database.find(i => i.NativeClass === resourceDescriptor);
+//     // console.log(resourcesDesc.Classes.length);
+//     // console.log(resourcesDesc.Classes.map((c:DatabaseDescriptor) => [c.mDisplayName, c.ClassName]));
 
-    // Items
-    const itemDesc = database.find(i => i.NativeClass === itemDescriptor);
-    // console.log(itemDesc.Classes.length);
-    // console.log(itemDesc.Classes.map((c:any) => [c.mDisplayName, c.ClassName]));
+//     // Items
+//     const itemDesc = database.find(i => i.NativeClass === itemDescriptor);
+//     // console.log(itemDesc.Classes.length);
+//     // console.log(itemDesc.Classes.map((c:any) => [c.mDisplayName, c.ClassName]));
 
-    // Manufacturer
-    const manufacturerWrapper = database.find(i => i.NativeClass === manuFacturerWrapperId);
-    // console.log(manufacturerWrapper.Classes.length);
-    // console.log(manufacturerWrapper.Classes.map((m:any) => [m.mDisplayName,m.ClassName]));
+//     // Manufacturer
+//     const manufacturerWrapper = database.find(i => i.NativeClass === manuFacturerWrapperId);
+//     // console.log(manufacturerWrapper.Classes.length);
+//     // console.log(manufacturerWrapper.Classes.map((m:any) => [m.mDisplayName,m.ClassName]));
 
-    // Manufacturer Variable
-    const manufacturerVariablePower = database.find(i => i.NativeClass === "/Script/CoreUObject.Class'/Script/FactoryGame.FGBuildableManufacturerVariablePower'");
-    // console.log(manufacturerVariablePower.Classes.length);
-    // console.log(manufacturerVariablePower.Classes.map((m:any) => [m.mDisplayName,m.ClassName]));
+//     // Manufacturer Variable
+//     const manufacturerVariablePower = database.find(i => i.NativeClass === "/Script/CoreUObject.Class'/Script/FactoryGame.FGBuildableManufacturerVariablePower'");
+//     // console.log(manufacturerVariablePower.Classes.length);
+//     // console.log(manufacturerVariablePower.Classes.map((m:any) => [m.mDisplayName,m.ClassName]));
     
-    // Recipes
-    const recipeWrapper = database.find(i => i.NativeClass === recipeWrapperId);
-    // console.log(recipeWrapper.Classes
-    //     .filter(produceInFilterPredicate([
-    //         ...manufacturerWrapper.Classes.map((m:any) => m.ClassName),
-    //         ...manufacturerVariablePower.Classes.map((m:any) => m.ClassName)
-    //     ]))
-    //     .map((r:any) => r.mDisplayName));
+//     // Recipes
+//     const recipeWrapper = database.find(i => i.NativeClass === recipeWrapperId);
+//     // console.log(recipeWrapper.Classes
+//     //     .filter(produceInFilterPredicate([
+//     //         ...manufacturerWrapper.Classes.map((m:any) => m.ClassName),
+//     //         ...manufacturerVariablePower.Classes.map((m:any) => m.ClassName)
+//     //     ]))
+//     //     .map((r:any) => r.mDisplayName));
 
-})();
+// })();
 
 function produceInFilterPredicate(manufacturers:string[]){
     return (item:any) => manufacturers.find(m => item.mProducedIn.indexOf(m) > -1);
