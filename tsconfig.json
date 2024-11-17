@@ -14,15 +14,16 @@
       // compilerOptions specified here will override those declared below,
       // but *only* in ts-node.  Useful if you want ts-node and tsc to use
       // different options with a single tsconfig.json.
-      "outDir": "./dist",
-      "declaration": true,
-      "module": "NodeNext",
-      "target": "ES2019"
     }
   },
   "compilerOptions": {
     // typescript options here
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "nodenext",
+    "outDir": "./dist",
+    "declaration": true,
+    "module": "NodeNext",
+    "target": "ES2015"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts"]
 }

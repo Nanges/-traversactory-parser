@@ -4,7 +4,7 @@
     "node": "20.18.0",
     "npm": "10.9.0"
   },
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Alternate factory planner",
   "scripts": {
     "start": "ts-node start.ts",
