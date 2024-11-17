@@ -1,12 +1,21 @@
-import { Visitable } from "./visitable";
+import { Visitable } from './visitable';
 
-export interface ASTNodeVisitor{
-    visitObject(o: Visitable<ASTNodeVisitor>): void;
-    visitArray(o: Visitable<ASTNodeVisitor>): void;
-    visitProperty(o: Visitable<ASTNodeVisitor>): void;
-    visitString(o: Visitable<ASTNodeVisitor>): void;
-    visitTrue(o: Visitable<ASTNodeVisitor>): void;
-    visitFalse(o: Visitable<ASTNodeVisitor>): void;
-    visitNull(o: Visitable<ASTNodeVisitor>): void;
-    visitNumber(o: Visitable<ASTNodeVisitor>): void;
+export interface ASTObjectVisitor {
+  visitObject(o: Visitable<ASTObjectVisitor>): void;
 }
+
+export interface ASTArrayVisitor {
+  visitArray(o: Visitable<ASTArrayVisitor>): void;
+}
+
+export type ASTTreeVisitor = ASTObjectVisitor & ASTArrayVisitor;
+
+export interface ASTLiteralVisitor {
+  visitString(o: Visitable<ASTLiteralVisitor>): void;
+  visitTrue(o: Visitable<ASTLiteralVisitor>): void;
+  visitFalse(o: Visitable<ASTLiteralVisitor>): void;
+  visitNull(o: Visitable<ASTLiteralVisitor>): void;
+  visitNumber(o: Visitable<ASTLiteralVisitor>): void;
+}
+
+export type ASTVisitor = ASTTreeVisitor & ASTLiteralVisitor;

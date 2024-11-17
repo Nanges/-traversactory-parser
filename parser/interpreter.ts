@@ -1,58 +1,57 @@
-import { ASTNodeVisitor } from "./ast-node-visitor";
-import { ASTArray, ASTCompositeNode, ASTNode, ASTNumber, ASTObject, ASTProperty, ASTString } from "./node";
-import { Visitable } from "./visitable";
+import { ASTArray, ASTNumber, ASTObject, ASTString, ASTTree } from './ast-node';
+import { ASTLiteralVisitor, ASTVisitor } from './ast-node-visitor';
+import { Visitable } from './visitable';
 
-export class ASTInterpreter implements ASTNodeVisitor{
-    private currentValue:any;
+export class ASTInterpreter implements ASTVisitor {
+  private currentValue: any;
 
-    static interprete(node: ASTNode){
-        const visitor = new ASTInterpreter();
-        node.accept(visitor);
-        return visitor.currentValue;
+  static interprete(tree: ASTTree) {
+    const interpreter = new ASTInterpreter();
+    tree.accept(interpreter);
+    return interpreter.currentValue;
+  }
+
+  private constructor() {}
+
+  visitObject(o: ASTObject): void {
+    const instance: any = {};
+
+    for (const [key, value] of o.properties) {
+      value?.accept(this);
+      instance[key] = this.currentValue;
     }
 
-    private constructor(){}
+    this.currentValue = instance;
+  }
 
-    visitObject(o: ASTObject): void {
-        const obj:any = {};
+  visitArray(o: ASTArray): void {
+    const instance: any[] = [];
 
-        for(const property of o.value){
-            property.value.accept(this);
-            obj[property.key] = this.currentValue;
-        }
-
-        this.currentValue = obj;
+    for (const item of o.items) {
+      item.accept(this);
+      instance.push(this.currentValue);
     }
 
-    visitArray(o: ASTArray): void {
-        const items = [];
-        for(const item of o.value){
-            item.accept(this);
-            items.push(this.currentValue);
-        }
+    this.currentValue = instance;
+  }
 
-        this.currentValue = items;
-    }
+  visitString(o: ASTString): void {
+    this.currentValue = o.value;
+  }
 
-    visitProperty(o: ASTProperty): void {}
+  visitNumber(o: ASTNumber): void {
+    this.currentValue = Number(o.value);
+  }
 
-    visitString(o: ASTString): void {
-        this.currentValue = o.value;
-    }
+  visitTrue(o: Visitable<ASTLiteralVisitor>): void {
+    this.currentValue = true;
+  }
 
-    visitTrue(): void {
-        this.currentValue = true;
-    }
+  visitFalse(o: Visitable<ASTLiteralVisitor>): void {
+    this.currentValue = false;
+  }
 
-    visitFalse(o: Visitable<ASTNodeVisitor>): void {
-        this.currentValue = false;
-    }
-
-    visitNull(o: Visitable<ASTNodeVisitor>): void {
-        this.currentValue = null;
-    }
-
-    visitNumber(o: ASTNumber): void {
-        this.currentValue = Number(o.value)
-    }
+  visitNull(o: Visitable<ASTLiteralVisitor>): void {
+    this.currentValue = null;
+  }
 }
