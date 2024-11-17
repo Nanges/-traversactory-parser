@@ -1,5 +1,6 @@
 import { Visitable } from '../visitable';
-import { ASTArrayVisitor, ASTLiteralVisitor, ASTObjectVisitor, ASTTreeVisitor, ASTVisitor } from './ast-node-visitor';
+import { ASTString } from './ast-literal';
+import { ASTArrayVisitor, ASTObjectVisitor, ASTTreeVisitor, ASTVisitor } from './ast-visitor';
 
 export abstract class ASTTree extends Visitable<ASTTreeVisitor> {
   constructor() {
@@ -50,45 +51,5 @@ export class ASTArray extends ASTTree {
 
   accept(visitor: ASTArrayVisitor): void {
     visitor.visitArray(this);
-  }
-}
-
-abstract class ASTValue extends Visitable<ASTLiteralVisitor> {
-  constructor(readonly value: string) {
-    super();
-  }
-}
-
-export class ASTString extends ASTValue {
-  constructor(value: string) {
-    super(value);
-  }
-
-  accept(visitor: ASTLiteralVisitor): void {
-    visitor.visitString(this);
-  }
-}
-
-export class ASTNumber extends ASTValue {
-  accept(visitor: ASTLiteralVisitor): void {
-    visitor.visitNumber(this);
-  }
-}
-
-export class ASTTrue extends Visitable<ASTLiteralVisitor> {
-  accept(visitor: ASTLiteralVisitor): void {
-    visitor.visitTrue(this);
-  }
-}
-
-export class ASTFalse extends Visitable<ASTLiteralVisitor> {
-  accept(visitor: ASTLiteralVisitor): void {
-    visitor.visitFalse(this);
-  }
-}
-
-export class ASTNull extends Visitable<ASTLiteralVisitor> {
-  accept(visitor: ASTLiteralVisitor): void {
-    visitor.visitNull(this);
   }
 }

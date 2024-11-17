@@ -1,6 +1,7 @@
 import { Visitable } from '../visitable';
-import { ASTArray, ASTNumber, ASTObject, ASTString, ASTTree } from './ast-node';
-import { ASTLiteralVisitor, ASTVisitor } from './ast-node-visitor';
+import { ASTNumber, ASTString } from './ast-literal';
+import { ASTArray, ASTObject, ASTTree } from './ast-tree';
+import { ASTLiteralVisitor, ASTVisitor } from './ast-visitor';
 
 export class ASTInterpreter implements ASTVisitor {
   private currentValue: any;
