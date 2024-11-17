@@ -1,5 +1,5 @@
+import { Visitable } from '../visitable';
 import { ASTArrayVisitor, ASTLiteralVisitor, ASTObjectVisitor, ASTTreeVisitor, ASTVisitor } from './ast-node-visitor';
-import { Visitable } from './visitable';
 
 export abstract class ASTTree extends Visitable<ASTTreeVisitor> {
   constructor() {

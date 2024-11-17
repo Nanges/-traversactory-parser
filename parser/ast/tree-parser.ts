@@ -1,5 +1,5 @@
+import { Token } from '../lexing';
 import { ASTArray, ASTFalse, ASTNull, ASTNumber, ASTObject, ASTString, ASTTree, ASTTrue } from './ast-node';
-import { Token } from './token';
 
 function createAncestor(token?: Token) {
   return token?.type === 'Equal' ? new ASTObject() : new ASTArray();

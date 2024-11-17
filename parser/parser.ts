@@ -1,6 +1,6 @@
-import { ASTInterpreter } from './interpreter';
-import { tokenGenerator } from './token-generator';
-import { TreeParser } from './tree-parser';
+import { TreeParser } from './ast';
+import { ASTInterpreter } from './ast/interpreter';
+import { tokenGenerator } from './lexing';
 
 export function parse(str: string) {
   const tokens = tokenGenerator(str);

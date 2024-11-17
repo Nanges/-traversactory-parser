@@ -1,4 +1,4 @@
-import { Visitable } from './visitable';
+import { Visitable } from '../visitable';
 
 export interface ASTObjectVisitor {
   visitObject(o: Visitable<ASTObjectVisitor>): void;
