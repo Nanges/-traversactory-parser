@@ -1,5 +1,4 @@
-import { TreeParser } from './ast';
-import { ASTInterpreter } from './ast/interpreter';
+import { ASTInterpreter, TreeParser } from './ast';
 import { tokenGenerator } from './lexing';
 
 export function parse(str: string) {
