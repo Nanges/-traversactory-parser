@@ -31,7 +31,7 @@ export class ASTObject extends ASTTree {
   }
 
   private appendKey(item: Visitable<ASTVisitor>) {
-    if (!(item instanceof ASTString)) throw new Error(`Invalid token`);
+    if (!(item instanceof ASTString)) throw new Error();
     this.currentKey = item.value;
     this._append = this.appendValue;
   }

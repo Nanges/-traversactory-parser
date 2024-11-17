@@ -1,48 +1,39 @@
-import { parse } from "./parser/parser";
-import { RECIPES } from "./recipes";
-import { Part, Recipe } from "./types";
+import { parse } from './parser/parse';
+import { RECIPES } from './recipes';
+import { Part, Recipe } from './types';
 
-function dependentsFrom(parts:Part[]){
-    return RECIPES.filter(r => r.inputs.find(i => parts.includes(i.part)) !== undefined);
+function dependentsFrom(parts: Part[]) {
+  return RECIPES.filter((r) => r.inputs.find((i) => parts.includes(i.part)) !== undefined);
 }
 
-function diff<T>(arrayRef:T[]){
-    return (item:T) => arrayRef.indexOf(item) === -1;
+function diff<T>(arrayRef: T[]) {
+  return (item: T) => arrayRef.indexOf(item) === -1;
 }
 
+function* dependentPartTree(parts: Part[]) {
+  const visitedRecipe: Recipe[] = [];
 
-function* dependentPartTree(parts:Part[]){
-    const visitedRecipe: Recipe[] = [];
+  do {
+    const recipes: Recipe[] = dependentsFrom(parts).filter(diff(visitedRecipe));
+    //.filter(r => !r.alternate);
 
-    do{
-        const recipes: Recipe[] = dependentsFrom(parts)
-            .filter(diff(visitedRecipe))
-            //.filter(r => !r.alternate);
-        
-        for(const recipe of recipes){
-            yield recipe.name;
-            visitedRecipe.push(recipe);
-        }
-
-        parts = recipes.flatMap(r => r.outputs.map(r => r.part));
+    for (const recipe of recipes) {
+      yield recipe.name;
+      visitedRecipe.push(recipe);
     }
-    while(parts.length > 0);
 
-    
-
-    
+    parts = recipes.flatMap((r) => r.outputs.map((r) => r.part));
+  } while (parts.length > 0);
 }
 
 // for(const recipe of dependentPartTree(['Iron Ore'])) {
 //     console.log("Recipe name:", recipe);
 // }
 
-
-
 // (async function(){
 //     const content = await promises.readFile('./en-US.json',{encoding:'utf-8'});
 //     const database: any[] = JSON.parse(content);
-    
+
 //     // Resources
 
 //     const resourceDescriptor = "/Script/CoreUObject.Class'/Script/FactoryGame.FGResourceDescriptor'";
@@ -68,7 +59,7 @@ function* dependentPartTree(parts:Part[]){
 //     const manufacturerVariablePower = database.find(i => i.NativeClass === "/Script/CoreUObject.Class'/Script/FactoryGame.FGBuildableManufacturerVariablePower'");
 //     // console.log(manufacturerVariablePower.Classes.length);
 //     // console.log(manufacturerVariablePower.Classes.map((m:any) => [m.mDisplayName,m.ClassName]));
-    
+
 //     // Recipes
 //     const recipeWrapper = database.find(i => i.NativeClass === recipeWrapperId);
 //     // console.log(recipeWrapper.Classes
@@ -80,15 +71,17 @@ function* dependentPartTree(parts:Part[]){
 
 // })();
 
-function produceInFilterPredicate(manufacturers:string[]){
-    return (item:any) => manufacturers.find(m => item.mProducedIn.indexOf(m) > -1);
+function produceInFilterPredicate(manufacturers: string[]) {
+  return (item: any) => manufacturers.find((m) => item.mProducedIn.indexOf(m) > -1);
 }
 
-const str = "((ItemClass=\"/Script/Engine.BlueprintGeneratedClass'/Game/FactoryGame/Resource/Parts/SAMIngot/Desc_SAMIngot.Desc_SAMIngot_C'\",Amount=1),(ItemClass=\"/Script/Engine.BlueprintGeneratedClass'/Game/FactoryGame/Resource/RawResources/Stone/Desc_Stone.Desc_Stone_C'\",Amount=24))";
+const str =
+  '((ItemClass="/Script/Engine.BlueprintGeneratedClass\'/Game/FactoryGame/Resource/Parts/SAMIngot/Desc_SAMIngot.Desc_SAMIngot_C\'",Amount=1),(ItemClass="/Script/Engine.BlueprintGeneratedClass\'/Game/FactoryGame/Resource/RawResources/Stone/Desc_Stone.Desc_Stone_C\'",Amount=24))';
 
-const str2 = "((Type=CT_Soft,ClearanceBox=(Min=(X=-25.000000,Y=-400.000000,Z=-200.000000),Max=(X=25.000000,Y=400.000000,Z=200.000000),IsValid=True),RelativeTransform=(Translation=(X=0.000000,Y=0.000000,Z=200.000000))))";
+const str2 =
+  '((Type=CT_Soft,ClearanceBox=(Min=(X=-25.000000,Y=-400.000000,Z=-200.000000),Max=(X=25.000000,Y=400.000000,Z=200.000000),IsValid=True),RelativeTransform=(Translation=(X=0.000000,Y=0.000000,Z=200.000000))))';
 
-const str3 = "(\"Foo\",\"Bar\",(Foo=5.2,Bar=6), (foo=(x=2,y=3)))"; // ["Foo","Bar",[["Foo",5],["Bar":6]]]
+const str3 = '("Foo","Bar",(Foo=5.2,Bar=6), (foo=(x=2,y=3)))'; // ["Foo","Bar",[["Foo",5],["Bar":6]]]
 
 // ("Foo","Bar",(["Foo",5],["Bar",6]))
 

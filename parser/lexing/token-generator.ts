@@ -1,3 +1,4 @@
+import { PositionError } from '../error/position-error';
 import { createToken, Token } from './token';
 
 enum DELIMITER {
@@ -74,7 +75,7 @@ export function* tokenGenerator(str: string) {
         // Literals
         else {
           const [word, newCursor] = extractLiteral(str, cursor, (c) => /[\d\.\w\-]/.test(c));
-          if (!word.length) throw new Error(`Tokenizing error: Invalid character "${char}" at position: ${cursor}`);
+          if (!word.length) throw new PositionError(cursor);
           yield tokenizeLiteral(word, cursor);
           cursor = newCursor;
         }
