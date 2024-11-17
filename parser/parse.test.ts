@@ -26,8 +26,7 @@ describe('parse()', () => {
     expect(str).toEqual([['foo', 'bar'], 'baz']);
   });
 
-  test('Should throw with: foo', () => {
-    const str = parse('foo');
-    expect(str).toEqual([['foo', 'bar'], 'baz']);
+  test('Should throw with: foo{dssssdsdvfv', () => {
+    expect(parse.bind(null, 'foo{dssssdsdvfv')).toThrow();
   });
 });

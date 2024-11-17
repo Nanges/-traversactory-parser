@@ -8,7 +8,7 @@
   "description": "Alternate factory planner",
   "main": "iron-traversal.js",
   "scripts": {
-    "start": "ts-node iron-traversal.ts",
+    "start": "ts-node start.ts",
     "test": "jest --watchAll"
   },
   "author": "ola",
