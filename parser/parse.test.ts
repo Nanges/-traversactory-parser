@@ -34,4 +34,8 @@ describe('parse()', () => {
   test('Should throw with: foo{dssssdsdvfv', () => {
     expect(parse.bind(null, 'foo{dssssdsdvfv')).toThrow();
   });
+
+  test('Should throw with: =', () => {
+    expect(parse.bind(null, '=')).toThrow();
+  });
 });

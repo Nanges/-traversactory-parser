@@ -1,3 +1,4 @@
 import { parse } from './parser/parse';
 
-parse('zdfldkldklkdlf{d');
+const obj = parse('(foo=(5,7))');
+console.log(obj);

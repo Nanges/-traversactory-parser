@@ -2,24 +2,30 @@ import { Visitable } from '../visitable';
 import { ASTNumber, ASTString } from './ast-literal';
 import { ASTArray, ASTObject, ASTTree } from './ast-tree';
 import { ASTLiteralVisitor, ASTVisitor } from './ast-visitor';
+import { BaseReviver, DefaultReviver, Reviver, ReviverFn } from './reviver';
 
 export class ASTInterpreter implements ASTVisitor {
   private currentValue: any;
+  private readonly reviver: BaseReviver;
 
-  static interprete(tree: ASTTree) {
-    const interpreter = new ASTInterpreter();
+  static interprete(tree: ASTTree, reviver?: ReviverFn) {
+    const interpreter = new ASTInterpreter(reviver);
     tree.accept(interpreter);
     return interpreter.currentValue;
   }
 
-  private constructor() {}
+  private constructor(reviverFn?: ReviverFn) {
+    this.reviver = reviverFn ? new Reviver(reviverFn) : new DefaultReviver();
+  }
 
   visitObject(o: ASTObject): void {
     const instance: any = {};
 
     for (const [key, value] of o.properties) {
-      value?.accept(this);
-      instance[key] = this.currentValue;
+      this.reviver.handleValue(key, (handle) => {
+        value?.accept(this);
+        instance[key] = handle(this.currentValue);
+      });
     }
 
     this.currentValue = instance;
@@ -28,10 +34,12 @@ export class ASTInterpreter implements ASTVisitor {
   visitArray(o: ASTArray): void {
     const instance: any[] = [];
 
-    for (const item of o.items) {
-      item.accept(this);
-      instance.push(this.currentValue);
-    }
+    o.items.forEach((item, index) => {
+      this.reviver.handleValue(index, (handle) => {
+        item.accept(this);
+        instance.push(handle(this.currentValue));
+      });
+    });
 
     this.currentValue = instance;
   }
