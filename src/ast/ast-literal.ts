@@ -1,10 +1,9 @@
 import { Visitable } from '../utils/visitable';
 import { ASTLiteralVisitor } from './ast-visitor';
 
-abstract class ASTValue extends Visitable<ASTLiteralVisitor> {
-  constructor(readonly value: string) {
-    super();
-  }
+abstract class ASTValue implements Visitable<ASTLiteralVisitor> {
+  constructor(readonly value: string) {}
+  abstract accept(visitor: ASTLiteralVisitor): void;
 }
 
 export class ASTString extends ASTValue {
@@ -23,19 +22,19 @@ export class ASTNumber extends ASTValue {
   }
 }
 
-export class ASTTrue extends Visitable<ASTLiteralVisitor> {
+export class ASTTrue implements Visitable<ASTLiteralVisitor> {
   accept(visitor: ASTLiteralVisitor): void {
     visitor.visitTrue(this);
   }
 }
 
-export class ASTFalse extends Visitable<ASTLiteralVisitor> {
+export class ASTFalse implements Visitable<ASTLiteralVisitor> {
   accept(visitor: ASTLiteralVisitor): void {
     visitor.visitFalse(this);
   }
 }
 
-export class ASTNull extends Visitable<ASTLiteralVisitor> {
+export class ASTNull implements Visitable<ASTLiteralVisitor> {
   accept(visitor: ASTLiteralVisitor): void {
     visitor.visitNull(this);
   }
