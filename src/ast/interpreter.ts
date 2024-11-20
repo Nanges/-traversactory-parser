@@ -1,6 +1,6 @@
 import { Visitable } from '../utils/visitable';
 import { ASTNumber, ASTString } from './ast-literal';
-import { ASTArray, ASTObject, ASTTree } from './ast-tree';
+import { ASTArray, ASTNode, ASTObject } from './ast-tree';
 import { ASTLiteralVisitor, ASTVisitor } from './ast-visitor';
 import { BaseReviver, DefaultReviver, Reviver, ReviverFn } from './reviver';
 
@@ -8,7 +8,7 @@ export class ASTInterpreter implements ASTVisitor {
   private currentValue: any;
   private readonly reviver: BaseReviver;
 
-  static interprete(tree: ASTTree, reviver?: ReviverFn) {
+  static interprete(tree: ASTNode, reviver?: ReviverFn) {
     const interpreter = new ASTInterpreter(reviver);
     tree.accept(interpreter);
     return interpreter.currentValue;

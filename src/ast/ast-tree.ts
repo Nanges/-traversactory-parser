@@ -1,14 +1,14 @@
 import { Visitable } from '../utils/visitable';
 import { ASTString } from './ast-literal';
-import { ASTArrayVisitor, ASTObjectVisitor, ASTTreeVisitor, ASTVisitor } from './ast-visitor';
+import { ASTArrayVisitor, ASTNodeVisitor, ASTObjectVisitor, ASTVisitor } from './ast-visitor';
 
-export interface ASTTree extends Visitable<ASTTreeVisitor> {
+export interface ASTNode extends Visitable<ASTNodeVisitor> {
   append(child: Visitable<ASTVisitor>): void;
 }
 
 type Property = [string, Visitable<ASTVisitor> | undefined];
 
-export class ASTObject implements ASTTree {
+export class ASTObject implements ASTNode {
   readonly properties: Property[] = [];
   private currentKey!: string;
   private _append: (item: Visitable<ASTVisitor>) => void;
@@ -37,7 +37,7 @@ export class ASTObject implements ASTTree {
   }
 }
 
-export class ASTArray implements ASTTree {
+export class ASTArray implements ASTNode {
   readonly items: Visitable<ASTVisitor>[] = [];
 
   append(child: Visitable<ASTVisitor>): void {

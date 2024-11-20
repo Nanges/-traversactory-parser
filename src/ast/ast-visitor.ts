@@ -8,7 +8,7 @@ export interface ASTArrayVisitor {
   visitArray(o: Visitable<ASTArrayVisitor>): void;
 }
 
-export type ASTTreeVisitor = ASTObjectVisitor & ASTArrayVisitor;
+export type ASTNodeVisitor = ASTObjectVisitor & ASTArrayVisitor;
 
 export interface ASTLiteralVisitor {
   visitString(o: Visitable<ASTLiteralVisitor>): void;
@@ -18,4 +18,4 @@ export interface ASTLiteralVisitor {
   visitNumber(o: Visitable<ASTLiteralVisitor>): void;
 }
 
-export type ASTVisitor = ASTTreeVisitor & ASTLiteralVisitor;
+export type ASTVisitor = ASTNodeVisitor & ASTLiteralVisitor;

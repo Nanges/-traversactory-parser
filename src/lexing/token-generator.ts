@@ -75,7 +75,7 @@ export function* tokenGenerator(str: string) {
         // Literals
         else {
           const [word, newCursor] = extractLiteral(str, cursor, (c) => /[\d\.\w\-]/.test(c));
-          if (!word.length) throw new PositionError(newCursor);
+          if (!word.length) throw new PositionError(newCursor, str);
           yield tokenizeLiteral(word, cursor);
           cursor = newCursor;
         }

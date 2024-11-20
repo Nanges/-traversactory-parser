@@ -1,64 +1,74 @@
-import { PositionError } from '../error/position-error';
+import { TokenError } from '../error/token-error';
 import { Token } from '../lexing';
 import { ASTFalse, ASTNull, ASTNumber, ASTString, ASTTrue } from './ast-literal';
-import { ASTArray, ASTObject, ASTTree } from './ast-tree';
+import { ASTArray, ASTNode, ASTObject } from './ast-tree';
 
-function createAncestor(token?: Token) {
+function createNode(token?: Token) {
   return token?.type === 'Equal' ? new ASTObject() : new ASTArray();
 }
 
 export function parseTree(tokens: Token[]) {
-  const ancestors: ASTTree[] = [];
-  let currentAncestor!: ASTTree;
+  const ancestors: ASTNode[] = [];
+  let currentNode: ASTNode | undefined;
+  let result!: ASTNode;
   let index = 0;
+  const ln = tokens.length;
   let token = tokens.at(index);
 
-  while (token != undefined) {
-    if (token.type === 'OpeningBracket') {
-      const ancestor = createAncestor(tokens.at(index + 2));
+  if (token?.type === 'OpeningBracket') {
+    currentNode = createNode(tokens.at(index + 2));
+    result = currentNode;
 
-      if (currentAncestor) {
-        currentAncestor.append(ancestor);
-        ancestors.unshift(currentAncestor);
-      }
+    ++index;
 
-      currentAncestor = ancestor;
-      token = tokens.at(++index);
-    } else if (!currentAncestor) {
-      throw new PositionError(token.pos);
-    } else {
+    while (index < ln) {
+      if (!currentNode) throw new TokenError(token);
+      token = tokens[index];
+
       switch (token.type) {
+        case 'OpeningBracket':
+          ancestors.unshift(currentNode);
+          const newNode = createNode(tokens.at(index + 2));
+          currentNode.append(newNode);
+          currentNode = newNode;
+          break;
         case 'ClosingBracket':
-          const ancestor = ancestors.shift();
-          if (ancestor) currentAncestor = ancestor;
+          currentNode = ancestors.shift();
           break;
         case 'Equal':
-          if (currentAncestor instanceof ASTArray) {
-            throw new PositionError(token.pos);
+          if (currentNode instanceof ASTArray) {
+            throw new TokenError(token);
           }
           break;
         case 'Comma':
+          const next = tokens.at(index + 1);
+          if (next && next?.type === 'Equal') {
+            throw new TokenError(next);
+          }
           break;
         case 'String':
-          currentAncestor.append(new ASTString(token.value));
+          currentNode.append(new ASTString(token.value));
           break;
         case 'Number':
-          currentAncestor.append(new ASTNumber(token.value));
+          currentNode.append(new ASTNumber(token.value));
           break;
         case 'True':
-          currentAncestor.append(new ASTTrue());
+          currentNode.append(new ASTTrue());
           break;
         case 'False':
-          currentAncestor.append(new ASTFalse());
+          currentNode.append(new ASTFalse());
           break;
         case 'Null':
-          currentAncestor.append(new ASTNull());
+          currentNode.append(new ASTNull());
           break;
       }
 
-      token = tokens.at(++index);
+      ++index;
     }
+
+    if (token?.type !== 'ClosingBracket') throw new Error('Unexpected end of input. ")" expected');
+    return result;
   }
 
-  return currentAncestor;
+  throw new Error('Unexpected start of input. "(" expected');
 }

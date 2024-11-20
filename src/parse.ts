@@ -1,10 +1,20 @@
 import { ASTInterpreter, parseTree, ReviverFn } from './ast';
+import { PositionError } from './error';
+import { TokenError } from './error/token-error';
 import { tokenGenerator } from './lexing';
-import { validate } from './validation';
 
 export function parse(str: string, reviver?: ReviverFn) {
-  const tokens = Array.from(tokenGenerator(str));
-  validate(tokens);
-  const tree = parseTree(tokens);
-  return ASTInterpreter.interprete(tree, reviver);
+  try {
+    const tokens = Array.from(tokenGenerator(str));
+    const tree = parseTree(tokens);
+    const result = ASTInterpreter.interprete(tree, reviver);
+    console.log(result);
+    return result;
+  } catch (error) {
+    if (error instanceof TokenError) {
+      throw new PositionError(error.token.pos, str);
+    }
+
+    throw error;
+  }
 }

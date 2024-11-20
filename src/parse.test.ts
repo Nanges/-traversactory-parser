@@ -35,10 +35,6 @@ describe('parse()', () => {
     expect(parse.bind(null, 'foo{dssssdsdvfv')).toThrow();
   });
 
-  test('Should throw with: =', () => {
-    expect(parse.bind(null, '=')).toThrow();
-  });
-
   test('Should throw with empty string', () => {
     expect(parse.bind(null, '')).toThrow('Unexpected start of input');
   });
@@ -49,6 +45,14 @@ describe('parse()', () => {
 
   test('Should throw with unepexcted end', () => {
     expect(parse.bind(null, '(')).toThrow('Unexpected end of input');
+  });
+
+  test('Should throw with: (),()', () => {
+    expect(parse.bind(null, '(),()')).toThrow('Invalid token at position');
+  });
+
+  test('Should throw with: (,=)', () => {
+    expect(parse.bind(null, '(,=)')).toThrow('Invalid token at position');
   });
 });
 
