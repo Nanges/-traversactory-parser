@@ -8,7 +8,6 @@ export function parse(str: string, reviver?: ReviverFn) {
     const tokens = Array.from(tokenGenerator(str));
     const tree = parseTree(tokens);
     const result = ASTInterpreter.interprete(tree, reviver);
-    console.log(result);
     return result;
   } catch (error) {
     if (error instanceof TokenError) {
