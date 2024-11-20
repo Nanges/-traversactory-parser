@@ -1,13 +1,10 @@
 import { ASTInterpreter, parseTree, ReviverFn } from './ast';
-import { handleError } from './error';
 import { tokenGenerator } from './lexing';
+import { validate } from './validation';
 
 export function parse(str: string, reviver?: ReviverFn) {
-  try {
-    const tokens = Array.from(tokenGenerator(str));
-    const tree = parseTree(tokens);
-    return ASTInterpreter.interprete(tree, reviver);
-  } catch (error) {
-    handleError(error, str);
-  }
+  const tokens = Array.from(tokenGenerator(str));
+  validate(tokens);
+  const tree = parseTree(tokens);
+  return ASTInterpreter.interprete(tree, reviver);
 }

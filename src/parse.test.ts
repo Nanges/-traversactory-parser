@@ -38,6 +38,18 @@ describe('parse()', () => {
   test('Should throw with: =', () => {
     expect(parse.bind(null, '=')).toThrow();
   });
+
+  test('Should throw with empty string', () => {
+    expect(parse.bind(null, '')).toThrow('Unexpected start of input');
+  });
+
+  test('Should throw with unepexcted start', () => {
+    expect(parse.bind(null, ')')).toThrow('Unexpected start of input');
+  });
+
+  test('Should throw with unepexcted end', () => {
+    expect(parse.bind(null, '(')).toThrow('Unexpected end of input');
+  });
 });
 
 describe('Parse with reviver', () => {
